@@ -46,6 +46,16 @@ async def test_tailscale_sensors(
     assert state.attributes.get(ATTR_FRIENDLY_NAME) == "router IP address"
     assert ATTR_DEVICE_CLASS not in state.attributes
 
+    state = hass.states.get("sensor.router_serve_url")
+    entry = entity_registry.async_get("sensor.router_serve_url")
+    assert entry
+    assert state
+    assert entry.unique_id == "123457_serve_url"
+    assert entry.entity_category == EntityCategory.DIAGNOSTIC
+    assert state.state == "https://router.homeassistant.github.ts.net"
+    assert state.attributes.get(ATTR_FRIENDLY_NAME) == "router Serve URL"
+    assert ATTR_DEVICE_CLASS not in state.attributes
+
     assert entry.device_id
     device_entry = device_registry.async_get(entry.device_id)
     assert device_entry

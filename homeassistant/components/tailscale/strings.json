@@ -57,6 +57,9 @@
       },
       "last_seen": {
         "name": "Last seen"
+      },
+      "serve_url": {
+        "name": "Serve URL"
       }
     }
   }
