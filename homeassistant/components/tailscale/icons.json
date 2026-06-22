@@ -20,6 +20,9 @@
     "sensor": {
       "ip": {
         "default": "mdi:ip-network"
+      },
+      "serve_url": {
+        "default": "mdi:web"
       }
     }
   }

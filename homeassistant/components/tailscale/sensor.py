@@ -28,6 +28,14 @@ class TailscaleSensorEntityDescription(SensorEntityDescription):
     value_fn: Callable[[TailscaleDevice], datetime | str | None]
 
 
+def _serve_url(device: TailscaleDevice) -> str:
+    """Return the Tailscale Serve URL for a device."""
+    name = device.name.removesuffix(".")
+    if not name.endswith(".ts.net"):
+        name = f"{name}.ts.net"
+    return f"https://{name}"
+
+
 SENSORS: tuple[TailscaleSensorEntityDescription, ...] = (
     TailscaleSensorEntityDescription(
         key="expires",
@@ -47,6 +55,12 @@ SENSORS: tuple[TailscaleSensorEntityDescription, ...] = (
         translation_key="last_seen",
         device_class=SensorDeviceClass.TIMESTAMP,
         value_fn=lambda device: device.last_seen,
+    ),
+    TailscaleSensorEntityDescription(
+        key="serve_url",
+        translation_key="serve_url",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=_serve_url,
     ),
 )
 
