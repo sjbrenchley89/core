@@ -37,7 +37,7 @@ async def test_tailscale_binary_sensors(
     assert entry
     assert state
     assert entry.unique_id == "123456_connected_to_control"
-    assert entry.entity_category is None
+    assert entry.entity_category == EntityCategory.DIAGNOSTIC
     assert state.state == STATE_ON
     assert (
         state.attributes.get(ATTR_FRIENDLY_NAME)
