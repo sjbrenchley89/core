@@ -315,6 +315,10 @@
           <div class="branch-body"><p>Only use after network and onboarding recovery do not restore access.</p><button class="jump-btn" data-jump="factoryIntro">Jump to reset guidance</button></div>
         </details>
         <details>
+          <summary>Restore Connection</summary>
+          <div class="branch-body"><p>Use this after you find a working address and want Home Assistant to keep opening reliably.</p><button class="jump-btn" data-jump="restoreIntro">Jump to restore steps</button></div>
+        </details>
+        <details>
           <summary>Tool configuration</summary>
           <div class="branch-body">
             <dl class="config-list" id="configList"></dl>
@@ -398,6 +402,16 @@
       factoryIntro: { branch: 'Factory Reset Path', title: 'Last resort: factory reset path', text: 'Only continue if power, cable, mDNS, IP, and onboarding recovery did not restore access. A reset removes local setup data.', options: [
         ['I have backups or this is a new install', 'Proceed carefully with official reset instructions.', 'resolvedReset'],
         ['I need to preserve data or I am unsure', 'Escalate before resetting.', 'escalateBeforeReset'] ] },
+      restoreIntro: { branch: 'Restore Connection', title: 'Restore a reliable connection', text: 'Use these steps once any browser can open Home Assistant by direct IP or local name, but your usual shortcut or app still fails.', options: [
+        ['Direct IP works in a browser', 'Reserve that address and update shortcuts.', 'restoreIp'],
+        ['homeassistant.local works in a browser', 'Refresh app and bookmarks.', 'restoreLocalName'],
+        ['Nothing opens reliably yet', 'Return to network checks.', 'dhcpIntro'] ] },
+      restoreIp: { branch: 'Restore Connection', title: 'Keep the working IP stable', text: 'In your router, reserve the working IP address for Home Assistant Green. Then update browser bookmarks and the Home Assistant app server address to that IP.', options: [
+        ['Updated router reservation and app/bookmarks', 'Connection restored.', 'resolvedConnectionRestored'],
+        ['I cannot reserve the address or the app still fails', 'Escalate restore details.', 'escalateRestore'] ] },
+      restoreLocalName: { branch: 'Restore Connection', title: 'Refresh local-name access', text: 'Remove the old app server entry, add the working homeassistant.local:8123 address again, and make sure the phone or computer is on the same local network without VPN.', options: [
+        ['The app and bookmark work again', 'Connection restored.', 'resolvedConnectionRestored'],
+        ['The app or bookmark still fails', 'Escalate restore details.', 'escalateRestore'] ] },
       resolvedWait: { outcome: 'success', branch: 'Quick Wins', title: 'Resolved: normal startup or update delay', text: 'Keep Home Assistant Green powered and connected. When the LED is solid white, open Home Assistant again.' },
       resolvedApp: { outcome: 'success', branch: 'mDNS Troubleshooting', title: 'Resolved: app connection refreshed', text: 'In the Home Assistant app, edit the server connection or add a new server using the working browser address.' },
       resolvedMdns: { outcome: 'success', branch: 'mDNS Troubleshooting', title: 'Resolved: use the direct IP or fix local name lookup', text: 'Bookmark the direct IP address for now. To restore homeassistant.local, keep devices on the same network and enable local network or mDNS/Bonjour traffic in your router.' },
@@ -405,11 +419,13 @@
       resolvedIp: { outcome: 'success', branch: 'DHCP/IP Issues', title: 'Resolved: router rule or address conflict fixed', text: 'Home Assistant Green is reachable again. Keep the router reservation or rule change that solved it.' },
       resolvedOnboarding: { outcome: 'success', branch: 'Onboarding Recovery', title: 'Resolved: onboarding can continue', text: 'Complete onboarding from the working browser session. After setup, add the server in the Home Assistant app.' },
       resolvedReset: { outcome: 'success', branch: 'Factory Reset Path', title: 'Ready for factory reset', text: 'Follow the official Home Assistant Green reset instructions, then reconnect Ethernet and power and repeat onboarding.' },
+      resolvedConnectionRestored: { outcome: 'success', branch: 'Restore Connection', title: 'Resolved: connection restored', text: 'Use the working address for the app and bookmarks. Keep the router reservation in place so the address stays stable.' },
       escalateHardware: { outcome: 'warning', branch: 'Quick Wins', title: 'Escalate: red LED remains after power cycle', text: 'Proceed to engineer support with these details:', details: ['LED status and whether it is steady or changing', 'Power supply used and outlet tested', 'What happened after the 30-second power cycle', 'Approximate age of the device and any recent power outage or update'] },
       escalatePower: { outcome: 'warning', branch: 'Quick Wins', title: 'Escalate: no LED with known power', text: 'Proceed to engineer support with these details:', details: ['Power adapter model or rating', 'Outlets tested', 'Whether any LED ever turns on', 'Any visible damage or unusual heat'] },
       escalateNoEthernet: { outcome: 'warning', branch: 'Quick Wins', title: 'Escalate: Ethernet setup is not available', text: 'Proceed to engineer support with these details:', details: ['Router or network model', 'Whether any wired connection can be tested temporarily', 'Current LED status', 'How you are trying to access Home Assistant'] },
       escalateNoNetwork: { outcome: 'warning', branch: 'DHCP/IP Issues', title: 'Escalate: Home Assistant Green does not appear on the network', text: 'Proceed to engineer support with these details:', details: ['LED status after 10 minutes', 'Router or switch model', 'Ethernet cable and port swap results', 'Whether link lights turn on', 'Router client-list screenshots or exported device list if available'] },
-      escalateBeforeReset: { outcome: 'warning', branch: 'Factory Reset Path', title: 'Escalate before reset', text: 'Proceed to engineer support with these details:', details: ['Whether you have backups', 'Exact page or message where setup is stuck', 'Working or attempted URLs', 'Current IP address if known', 'Steps already tried from this diagnostic'] }
+      escalateBeforeReset: { outcome: 'warning', branch: 'Factory Reset Path', title: 'Escalate before reset', text: 'Proceed to engineer support with these details:', details: ['Whether you have backups', 'Exact page or message where setup is stuck', 'Working or attempted URLs', 'Current IP address if known', 'Steps already tried from this diagnostic'] },
+      escalateRestore: { outcome: 'warning', branch: 'Restore Connection', title: 'Escalate: connection cannot be restored consistently', text: 'Proceed to engineer support with these details:', details: ['Which address works in a browser, if any', 'Whether the Home Assistant app or browser bookmark fails', 'Router reservation attempt and router model', 'Whether VPN, guest network, VLAN, or device isolation is enabled', 'Screenshots of the app server settings and browser error if available'] }
     };
 
     const diagnosticConfig = {
