@@ -224,6 +224,29 @@
       background: var(--panel-2);
     }
 
+    .tool-meta, .config-list {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 650;
+    }
+
+    .config-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .config-list div {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .config-list dt { font-weight: 800; }
+    .config-list dd { margin: 0; text-align: right; }
+
     @media (max-width: 860px) {
       .layout { grid-template-columns: 1fr; }
       aside { position: static; }
@@ -252,6 +275,7 @@
       <div class="eyebrow">Home Assistant Green help</div>
       <h1>Connection diagnostic</h1>
       <p>Use this guided tool when Home Assistant Green powers on but you cannot reliably open Home Assistant from a browser or the app. It starts with the quick wins, then narrows the issue to local name lookup, IP address, onboarding, or network visibility.</p>
+      <p class="tool-meta" id="toolMeta">Self-contained diagnostic</p>
     </header>
 
     <div class="layout">
@@ -289,6 +313,12 @@
         <details>
           <summary>Factory Reset Path</summary>
           <div class="branch-body"><p>Only use after network and onboarding recovery do not restore access.</p><button class="jump-btn" data-jump="factoryIntro">Jump to reset guidance</button></div>
+        </details>
+        <details>
+          <summary>Tool configuration</summary>
+          <div class="branch-body">
+            <dl class="config-list" id="configList"></dl>
+          </div>
         </details>
         <h2>Your path</h2>
         <ul class="path-list" id="pathList"><li>No answers selected yet.</li></ul>
@@ -384,7 +414,9 @@
 
     const diagnosticConfig = {
       approxTotal: 7,
-      defaultStart: 'start'
+      defaultStart: 'start',
+      version: '2026.7',
+      lastUpdated: 'July 1, 2026'
     };
     let current = diagnosticConfig.defaultStart;
     let history = [];
@@ -398,6 +430,17 @@
     const pathList = document.getElementById('pathList');
     const backBtn = document.getElementById('backBtn');
     const homeBtn = document.getElementById('homeBtn');
+    const toolMeta = document.getElementById('toolMeta');
+    const configList = document.getElementById('configList');
+
+    function renderConfig() {
+      toolMeta.textContent = `Version ${diagnosticConfig.version} · Updated ${diagnosticConfig.lastUpdated} · Works offline`;
+      configList.innerHTML = `
+        <div><dt>Estimated depth</dt><dd>~${diagnosticConfig.approxTotal} steps</dd></div>
+        <div><dt>Default start</dt><dd>Entry points</dd></div>
+        <div><dt>Dependencies</dt><dd>None</dd></div>
+      `;
+    }
 
     function render() {
       const node = steps[current];
@@ -453,6 +496,7 @@
     homeBtn.addEventListener('click', () => reset('start'));
     document.querySelectorAll('[data-jump]').forEach(button => button.addEventListener('click', () => reset(button.dataset.jump)));
 
+    renderConfig();
     render();
   </script>
 </body>
