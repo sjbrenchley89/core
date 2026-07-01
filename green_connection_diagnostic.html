@@ -442,11 +442,11 @@
       `;
     }
 
-    function render() {
+    function repaint() {
       const node = steps[current];
-      const stepNumber = Math.min(history.length + (current === 'start' ? 0 : 1), diagnosticConfig.approxTotal);
+      const stepNumber = Math.min(history.length + (current === diagnosticConfig.defaultStart ? 0 : 1), diagnosticConfig.approxTotal);
       const percent = node.outcome ? 100 : Math.min(95, Math.round((stepNumber / diagnosticConfig.approxTotal) * 100));
-      progressLabel.textContent = node.outcome ? 'Outcome reached' : (current === 'start' ? 'Choose an entry point' : `Step ${stepNumber} of ~${diagnosticConfig.approxTotal}`);
+      progressLabel.textContent = node.outcome ? 'Outcome reached' : (current === diagnosticConfig.defaultStart ? 'Choose an entry point' : `Step ${stepNumber} of ~${diagnosticConfig.approxTotal}`);
       branchLabel.textContent = node.branch;
       progressFill.style.width = `${percent}%`;
       progressBar.setAttribute('aria-valuenow', String(percent));
@@ -470,7 +470,7 @@
         answers.push({ question: node.title, answer: node.options[answerIndex][0] });
       }
       current = next;
-      render();
+      repaint();
     }
 
     stepCard.addEventListener('click', event => {
@@ -482,22 +482,22 @@
       if (!history.length) return;
       current = history.pop();
       answers.pop();
-      render();
+      repaint();
     });
 
     function reset(to = diagnosticConfig.defaultStart) {
       current = to;
       history = [];
       answers = [];
-      render();
+      repaint();
     }
 
     document.getElementById('startOverBtn').addEventListener('click', () => reset());
-    homeBtn.addEventListener('click', () => reset('start'));
+    homeBtn.addEventListener('click', () => reset(diagnosticConfig.defaultStart));
     document.querySelectorAll('[data-jump]').forEach(button => button.addEventListener('click', () => reset(button.dataset.jump)));
 
     renderConfig();
-    render();
+    repaint();
   </script>
 </body>
 </html>
